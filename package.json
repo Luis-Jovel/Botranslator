@@ -1,0 +1,28 @@
+{
+  "name": "botranslator",
+  "version": "1.0.0",
+  "description": "Chat bot for translating words from multiple languages",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bot",
+    "chat",
+    "messenger",
+    "translate"
+  ],
+  "author": "Luis Jovel",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.2.3",
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.2",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "qs": "^6.2.1",
+    "request": "^2.74.0",
+    "restify": "^4.1.1"
+  }
+}
