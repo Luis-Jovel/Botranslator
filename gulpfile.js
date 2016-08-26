@@ -10,14 +10,14 @@ function errHandler(title) {
 	});
 }
 gulp.task('coffee', function () {
-	gulp.src('./*.coffee')
+	gulp.src('./**/*.coffee')
 	.pipe(errHandler("Error CoffeeScript"))
 	.pipe(plugins.coffee())
 	.pipe(gulp.dest('./'))
 });
 
 gulp.task('watch', ['coffee'], function () {
-	gulp.watch('./*.coffee', ['coffee']);
+	gulp.watch('./**/*.coffee', ['coffee']);
 });
 
 gulp.task('default', ['watch']);
