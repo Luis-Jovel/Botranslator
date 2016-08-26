@@ -1,29 +1,23 @@
 (function() {
-  var bot, builder, connector, translator, yandexApi, yandex_api_key;
+  var Botranslator, bot, connector, restify, server;
 
-  yandex_api_key = 'trnsl.1.1.20160825T040759Z.80be8e5e9a32ccb3.13f04204a5fefe27fc5cb69611202fb6b81f6fe0';
+  Botranslator = require('./libs/botranslator');
 
-  builder = require('botbuilder');
+  restify = require('restify');
 
-  yandexApi = require('./yandex-api');
+  server = restify.createServer();
 
-  translator = new yandexApi(yandex_api_key, 'en', 'es');
+  server.listen(process.env.port || process.env.PORT || 3978, function() {
+    return console.log('%s listening to %s', server.name, server.url);
+  });
 
-  connector = new builder.ConsoleConnector().listen();
+  connector = new builder.ChatConnector({
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+  });
 
-  bot = new builder.UniversalBot(connector);
+  bot = new Botranslator(connector);
 
-  bot.dialog('/', [
-    function(session, args, next) {
-      translator.translate(session.message.text, function(message) {
-        if (message.success) {
-          session.send('%s', message.text);
-        } else {
-
-        }
-      });
-      return;
-    }
-  ]);
+  server.post('/api/messages', connector.listen());
 
 }).call(this);

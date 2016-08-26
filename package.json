@@ -14,6 +14,10 @@
   ],
   "author": "Luis Jovel",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luis-Jovel/Botranslator/issues"
+  },
+  "homepage": "https://github.com/Luis-Jovel/Botranslator#readme",
   "dependencies": {
     "botbuilder": "^3.2.3",
     "gulp": "^3.9.1",
