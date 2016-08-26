@@ -1,5 +1,6 @@
 Botranslator = require './libs/botranslator'
 restify = require 'restify'
+builder = require 'botbuilder'
 
 server = restify.createServer()
 server.listen(process.env.port || process.env.PORT || 3978, -> 

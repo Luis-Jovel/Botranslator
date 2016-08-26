@@ -1,9 +1,11 @@
 (function() {
-  var Botranslator, bot, connector, restify, server;
+  var Botranslator, bot, builder, connector, restify, server;
 
   Botranslator = require('./libs/botranslator');
 
   restify = require('restify');
+
+  builder = require('botbuilder');
 
   server = restify.createServer();
 
