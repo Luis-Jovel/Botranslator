@@ -23,8 +23,21 @@
             if (!session.userData.bot_ui_language) {
               session.beginDialog('/set-bot-ui-lang');
             } else {
-              session.beginDialog('/intents');
+              next();
             }
+          };
+        })(this), (function(_this) {
+          return function(session, args, next) {
+            if (!session.userData.first_message) {
+              session.userData.first_message = true;
+              session.send('instructions');
+            } else {
+              next();
+            }
+          };
+        })(this), (function(_this) {
+          return function(session, args, next) {
+            return session.beginDialog('/intents');
           };
         })(this)
       ]);
@@ -37,11 +50,17 @@
           return function(session, results) {
             session.userData.bot_ui_language = results.response;
             delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
+            delete _this.intents.handlers["" + _this.lang.intent_instructions];
             _this.lang = languages[results.response];
             _this.intents.matches(_this.lang.intent_switch_languages, [
               function(session, args, next) {
                 translator["switch"]();
                 session.send(_this.lang.send_switch_languages, _this.lang[translator.source_lang], _this.lang[translator.target_lang]);
+              }
+            ]);
+            _this.intents.matches(_this.lang.intent_instructions, [
+              function(session, args, next) {
+                session.send('instructions');
               }
             ]);
             session.send(_this.lang.send_bot_language_setted, _this.lang[results.response]);

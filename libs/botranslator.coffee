@@ -19,8 +19,18 @@ class Bot
 					session.beginDialog '/set-bot-ui-lang'
 					return
 				else
-					session.beginDialog '/intents'
+					next()
 					return
+			(session, args,next) =>
+					if !session.userData.first_message
+						session.userData.first_message = true
+						session.send 'instructions'
+						return
+					else
+						next()
+						return
+			(session, args, next) =>				
+					session.beginDialog '/intents'
 		]
 		@bot.dialog '/set-bot-ui-lang', [
 			(session) =>
@@ -30,6 +40,7 @@ class Bot
 				session.userData.bot_ui_language = results.response
 				# Ignore intents from previous selected language
 				delete @intents.handlers["#{@lang.intent_switch_languages}"]
+				delete @intents.handlers["#{@lang.intent_instructions}"]
 				@lang = languages[results.response]
 				# Match intents for selected bot ui language
 				@intents.matches @lang.intent_switch_languages, [
@@ -38,7 +49,11 @@ class Bot
 						session.send @lang.send_switch_languages, @lang[translator.source_lang], @lang[translator.target_lang]
 						return
 				]
-
+				@intents.matches @lang.intent_instructions, [
+					(session, args, next) =>
+						session.send 'instructions'
+						return
+				]
 				session.send @lang.send_bot_language_setted, @lang[results.response]
 				session.endDialog()
 				return
@@ -46,6 +61,9 @@ class Bot
 		@bot.dialog '/intents', @intents
 
 		# Bot intents
+		# @intents.onBegin (session, args, next) ->
+		# 	builder.Prompts.text session, 'Escribe mensajes para traducirlos'
+		# 	return
 		@intents.matches languages.intent_change_bot_ui_language, [
 			(session) ->
 				session.beginDialog '/set-bot-ui-lang'
@@ -63,5 +81,5 @@ class Bot
 							return
 					return
 				return
-		]
+		]	
 module.exports = Bot
