@@ -20,7 +20,7 @@
       this.bot.dialog('/', [
         (function(_this) {
           return function(session, args, next) {
-            if (!session.userData.bot_ui_language) {
+            if (!session.userData.first_message) {
               session.beginDialog('/set-bot-ui-lang');
             } else {
               next();
@@ -30,14 +30,9 @@
           return function(session, args, next) {
             if (!session.userData.first_message) {
               session.userData.first_message = true;
-              session.send('instructions');
-            } else {
-              next();
+              session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
             }
-          };
-        })(this), (function(_this) {
-          return function(session, args, next) {
-            return session.beginDialog('/intents');
+            session.beginDialog('/intents');
           };
         })(this)
       ]);
@@ -48,7 +43,6 @@
           };
         })(this), (function(_this) {
           return function(session, results) {
-            session.userData.bot_ui_language = results.response;
             delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
             delete _this.intents.handlers["" + _this.lang.intent_instructions];
             _this.lang = languages[results.response];
@@ -60,7 +54,7 @@
             ]);
             _this.intents.matches(_this.lang.intent_instructions, [
               function(session, args, next) {
-                session.send('instructions');
+                session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
               }
             ]);
             session.send(_this.lang.send_bot_language_setted, _this.lang[results.response]);
