@@ -23,40 +23,53 @@
             if (!session.userData.bot_ui_language) {
               session.beginDialog('/set-bot-ui-lang');
             } else {
-              session.send('todo bien');
+              session.beginDialog('/intents');
             }
           };
         })(this)
       ]);
-      this.intents.matches(this.lang.intent_switch_languages, [
+      this.bot.dialog('/set-bot-ui-lang', [
         (function(_this) {
-          return function(session, args, next) {
-            translator["switch"]();
-            session.send(_this.lang.send_switch_languages, _this.lang[translator.source_lang], _this.lang[translator.target_lang]);
+          return function(session) {
+            builder.Prompts.text(session, languages.es.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language);
+          };
+        })(this), (function(_this) {
+          return function(session, results) {
+            session.userData.bot_ui_language = results.response;
+            delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
+            _this.lang = languages[results.response];
+            _this.intents.matches(_this.lang.intent_switch_languages, [
+              function(session, args, next) {
+                translator["switch"]();
+                session.send(_this.lang.send_switch_languages, _this.lang[translator.source_lang], _this.lang[translator.target_lang]);
+              }
+            ]);
+            session.send(_this.lang.send_bot_language_setted, _this.lang[results.response]);
+            session.endDialog();
           };
         })(this)
+      ]);
+      this.bot.dialog('/intents', this.intents);
+      this.intents.matches(languages.intent_change_bot_ui_language, [
+        function(session) {
+          session.beginDialog('/set-bot-ui-lang');
+        }
       ]);
       this.intents.onDefault([
         (function(_this) {
           return function(session, args, next) {
+            var lang;
+            lang = _this.lang;
             translator.translate(session.message.text, function(message) {
               if (message.success) {
                 session.send('%s', message.text);
               } else {
-                session.send(this.lang.send_error);
+                session.send(lang.send_error);
               }
             });
             return;
           };
         })(this)
-      ]);
-      this.bot.dialog('/set-bot-ui-lang', [
-        function(session) {
-          builder.Prompts.text(session, 'idioma?');
-        }, function(session, results) {
-          session.userData.bot_ui_language = results.response;
-          session.endDialog();
-        }
       ]);
     }
 

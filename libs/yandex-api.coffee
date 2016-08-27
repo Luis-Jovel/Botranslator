@@ -11,6 +11,7 @@ class YandexApi
 		return "#{@base_url}#{path}?#{qs.stringify(params)}"
 	get: (url, callback) ->
 		request.get url, (err, res, body) ->
+			data = {}
 			if err || res.statusCode isnt 200
 				data.success = false
 				data.err = err

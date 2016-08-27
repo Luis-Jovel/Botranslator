@@ -23,6 +23,7 @@
     YandexApi.prototype.get = function(url, callback) {
       request.get(url, function(err, res, body) {
         var data;
+        data = {};
         if (err || res.statusCode !== 200) {
           data.success = false;
           data.err = err;

@@ -11,45 +11,57 @@ class Bot
 		@lang = languages.es
 		@bot = new builder.UniversalBot @connector
 		@intents = new builder.IntentDialog()
+		
+		# Bot dialogs
 		@bot.dialog '/', [
 			(session, args, next) =>
 				if !session.userData.bot_ui_language
-					session.beginDialog('/set-bot-ui-lang');
+					session.beginDialog '/set-bot-ui-lang'
 					return
 				else
-					session.send 'todo bien'
-					# next()		
+					session.beginDialog '/intents'
 					return
-			# @intents
 		]
+		@bot.dialog '/set-bot-ui-lang', [
+			(session) =>
+				builder.Prompts.text session, "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
+				return
+			(session, results) =>
+				session.userData.bot_ui_language = results.response
+				# Ignore intents from previous selected language
+				delete @intents.handlers["#{@lang.intent_switch_languages}"]
+				@lang = languages[results.response]
+				# Match intents for selected bot ui language
+				@intents.matches @lang.intent_switch_languages, [
+					(session, args, next) =>
+						translator.switch()
+						session.send @lang.send_switch_languages, @lang[translator.source_lang], @lang[translator.target_lang]
+						return
+				]
+
+				session.send @lang.send_bot_language_setted, @lang[results.response]
+				session.endDialog()
+				return
+		]
+		@bot.dialog '/intents', @intents
 
 		# Bot intents
-		@intents.matches @lang.intent_switch_languages, [
-			(session, args, next) =>
-				translator.switch()
-				session.send @lang.send_switch_languages, @lang[translator.source_lang], @lang[translator.target_lang]
+		@intents.matches languages.intent_change_bot_ui_language, [
+			(session) ->
+				session.beginDialog '/set-bot-ui-lang'
 				return
 		]
 		@intents.onDefault [
 			(session, args, next) =>
+				lang = @lang
 				translator.translate session.message.text, (message) ->
 						if message.success
 							session.send '%s', message.text
 							return
 						else
-							session.send @lang.send_error
+							session.send lang.send_error
 							return
 					return
-				return
-		]
-		# Bot dialogs
-		@bot.dialog '/set-bot-ui-lang', [
-			(session) ->
-				builder.Prompts.text session, 'idioma?'
-				return
-			(session, results) ->
-				session.userData.bot_ui_language = results.response
-				session.endDialog()
 				return
 		]
 module.exports = Bot
