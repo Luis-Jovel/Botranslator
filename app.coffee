@@ -19,6 +19,6 @@ bot = new Botranslator connector
 
 server.post '/api/messages', connector.listen()
 
-server.get /\//, restify.serveStatic
-	directory: './public'
-	default: 'index.html'
+server.get /\//, (req, res, next) ->
+	# res.send 200
+	res.sendfile './public/index.html'

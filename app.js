@@ -22,9 +22,8 @@
 
   server.post('/api/messages', connector.listen());
 
-  server.get(/\//, restify.serveStatic({
-    directory: './public',
-    "default": 'index.html'
-  }));
+  server.get(/\//, function(req, res, next) {
+    return res.sendfile('./public/index.html');
+  });
 
 }).call(this);
