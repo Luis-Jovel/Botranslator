@@ -41,7 +41,7 @@
           return function(session) {
             var msg;
             session.send("%s.\n\n%s", languages.es.send_set_bot_ui_language, languages.en.send_set_bot_ui_language);
-            msg = new builder.Message(session).attachments([new builder.HeroCard(session).subtitle(languages.es.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language).buttons([builder.CardAction.imBack(session, "es", languages.es.es), builder.CardAction.imBack(session, "en", languages.en.en)])]);
+            msg = new builder.Message(session).attachments([new builder.HeroCard(session).title(languages.es.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language).buttons([builder.CardAction.imBack(session, "es", languages.es.es), builder.CardAction.imBack(session, "en", languages.en.en)])]);
             builder.Prompts.choice(session, msg, "es|en");
           };
         })(this), (function(_this) {

@@ -30,14 +30,13 @@ class Bot
 		]
 		@bot.dialog '/set-bot-ui-lang', [
 			(session) =>
-				# builder.Prompts.text session, "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
 				session.send "%s.\n\n%s", languages.es.send_set_bot_ui_language, languages.en.send_set_bot_ui_language
 				#ask user to select language from optio menu
 				msg = new builder.Message(session)
 					.attachments [
 						new builder.HeroCard session
-							# .title ""
-							.subtitle "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
+							.title "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
+							# .subtitle "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
 							.buttons [
 								builder.CardAction.imBack session, "es", languages.es.es
 								builder.CardAction.imBack session, "en", languages.en.en
