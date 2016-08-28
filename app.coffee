@@ -21,4 +21,4 @@ server.post '/api/messages', connector.listen()
 
 server.get /\//, (req, res, next) ->
 	# res.send 200
-	res.sendfile './public/index.html'
+	res.sendFile './public/index.html'

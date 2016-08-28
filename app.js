@@ -23,7 +23,7 @@
   server.post('/api/messages', connector.listen());
 
   server.get(/\//, function(req, res, next) {
-    return res.sendfile('./public/index.html');
+    return res.sendFile('./public/index.html');
   });
 
 }).call(this);
