@@ -24,6 +24,7 @@ class Bot
 			(session, args,next) =>
 					if !session.userData.first_message
 						session.userData.first_message = true
+						session.send @lang.send_greetings
 						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
 						session.send @lang.send_instructions_2
 						session.send @lang.send_instructions_3

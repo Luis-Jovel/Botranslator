@@ -30,6 +30,7 @@
           return function(session, args, next) {
             if (!session.userData.first_message) {
               session.userData.first_message = true;
+              session.send(_this.lang.send_greetings);
               session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
               session.send(_this.lang.send_instructions_2);
               session.send(_this.lang.send_instructions_3);
