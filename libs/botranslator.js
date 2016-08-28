@@ -45,11 +45,13 @@
           };
         })(this), (function(_this) {
           return function(session, results) {
+            console.log("before deleting intents: " + _this.lang);
             if (_this.lang != null) {
               delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
               delete _this.intents.handlers["" + _this.lang.intent_instructions];
             }
             _this.lang = languages[results.response];
+            console.log("after deleting intents and changing lang: " + _this.lang);
             _this.intents.matches(_this.lang.intent_switch_languages, [
               function(session, args, next) {
                 translator["switch"]();
