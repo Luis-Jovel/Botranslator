@@ -2,8 +2,8 @@ yandex_api_key = 'trnsl.1.1.20160825T040759Z.80be8e5e9a32ccb3.13f04204a5fefe27fc
 builder = require 'botbuilder'
 yandexApi = require './yandex-api'
 
-#initialize translator from english to spanish by default
-translator = new yandexApi yandex_api_key, 'en','es'
+#initialize translator
+translator = new yandexApi yandex_api_key
 
 languages = new require '../lang/lang'
 class Bot
@@ -16,6 +16,10 @@ class Bot
 		@bot.dialog '/', [
 			(session, args, next) =>
 				if !session.userData.first_message
+					# initialize translation from english to spanish by default
+					session.userData.translation_order =
+						source: "en"
+						target: "es"
 					session.beginDialog '/set-bot-ui-lang'
 					return
 				else
@@ -56,12 +60,17 @@ class Bot
 				# Match intents for selected bot ui language
 				@intents.matches @lang.intent_switch_languages, [
 					(session, args, next) =>
-						translator.switch()
+						# intent for changing the order of the translation
+						prev_order = session.userData.translation_order
+						session.userData.translation_order =
+							source: prev_order.target
+							target: prev_order.source
 						session.send @lang.send_switch_languages, @lang[translator.source_lang], @lang[translator.target_lang]
 						return
 				]
 				@intents.matches @lang.intent_instructions, [
 					(session, args, next) =>
+						# intent for showing instructions
 						session.send @lang.send_bot_language_setted, @lang[results.response.entity]
 						session.send @lang.send_greetings
 						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
@@ -83,7 +92,7 @@ class Bot
 			(session, args, next) =>
 				lang = @lang
 				session.send @lang.send_from_source_to_target_language, @lang[translator.source_lang], @lang[translator.target_lang]
-				translator.translate session.message.text, (message) ->
+				translator.translate session.message.text, session.userData.translation_order, (message) ->
 						if message.success
 							session.send '%s', message.text
 							return
@@ -101,7 +110,7 @@ class Bot
 		# intents for devs
 		@intents.matches /\/deleteProfile/, [
 			# dialog to delete all user data related to a single user
-			# this option is not explicitly explained to the user because its use is mostly for development purposes
+			# this option is not explicitly explained to the user because its intended to be used mostly for development purposes
 			(session) ->
 				session.userData = {}
 				session.send "userData deleted"

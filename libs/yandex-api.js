@@ -6,16 +6,14 @@
   qs = require('qs');
 
   YandexApi = (function() {
-    function YandexApi(api_key, source_lang, target_lang) {
+    function YandexApi(api_key) {
       this.api_key = api_key;
-      this.source_lang = source_lang;
-      this.target_lang = target_lang;
       this.base_url = 'https://translate.yandex.net/api/v1.5/tr.json';
     }
 
-    YandexApi.prototype.buildUrl = function(path, params) {
+    YandexApi.prototype.buildUrl = function(path, params, languages) {
       params.key = this.api_key;
-      params.lang = this.source_lang + "-" + this.target_lang;
+      params.lang = languages.source + "-" + languages.target;
       params.options = 1;
       return "" + this.base_url + path + "?" + (qs.stringify(params));
     };
@@ -35,20 +33,12 @@
       });
     };
 
-    YandexApi.prototype.translate = function(text, callback) {
+    YandexApi.prototype.translate = function(text, languages, callback) {
       this.get(this.buildUrl('/translate', {
         text: text
-      }), function(data) {
+      }, languages), function(data) {
         callback(data);
       });
-    };
-
-    YandexApi.prototype["switch"] = function() {
-      var new_source_lang, new_target_lang;
-      new_source_lang = this.target_lang;
-      new_target_lang = this.source_lang;
-      this.source_lang = new_source_lang;
-      this.target_lang = new_target_lang;
     };
 
     return YandexApi;

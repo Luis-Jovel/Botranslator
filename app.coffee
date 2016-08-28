@@ -19,6 +19,7 @@ bot = new Botranslator connector
 
 server.post '/api/messages', connector.listen()
 
+# serve privacy policy URL (facebook messenger requirement)
 server.get /\//, restify.serveStatic
 	directory: './public'
 	default: 'index.html'

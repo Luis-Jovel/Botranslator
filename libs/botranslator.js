@@ -7,7 +7,7 @@
 
   yandexApi = require('./yandex-api');
 
-  translator = new yandexApi(yandex_api_key, 'en', 'es');
+  translator = new yandexApi(yandex_api_key);
 
   languages = new require('../lang/lang');
 
@@ -21,6 +21,10 @@
         (function(_this) {
           return function(session, args, next) {
             if (!session.userData.first_message) {
+              session.userData.translation_order = {
+                source: "en",
+                target: "es"
+              };
               session.beginDialog('/set-bot-ui-lang');
             } else {
               next();
@@ -54,7 +58,12 @@
             _this.lang = languages[results.response.entity];
             _this.intents.matches(_this.lang.intent_switch_languages, [
               function(session, args, next) {
-                translator["switch"]();
+                var prev_order;
+                prev_order = session.userData.translation_order;
+                session.userData.translation_order = {
+                  source: prev_order.target,
+                  target: prev_order.source
+                };
                 session.send(_this.lang.send_switch_languages, _this.lang[translator.source_lang], _this.lang[translator.target_lang]);
               }
             ]);
@@ -83,7 +92,7 @@
             var lang;
             lang = _this.lang;
             session.send(_this.lang.send_from_source_to_target_language, _this.lang[translator.source_lang], _this.lang[translator.target_lang]);
-            translator.translate(session.message.text, function(message) {
+            translator.translate(session.message.text, session.userData.translation_order, function(message) {
               if (message.success) {
                 session.send('%s', message.text);
               } else {

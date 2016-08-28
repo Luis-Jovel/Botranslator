@@ -2,11 +2,11 @@ request  	= require 'request'
 qs 			= require 'qs'
 
 class YandexApi
-	constructor: (@api_key, @source_lang, @target_lang) ->
+	constructor: (@api_key) ->
 		@base_url = 'https://translate.yandex.net/api/v1.5/tr.json'
-	buildUrl: (path, params) ->
+	buildUrl: (path, params, languages) ->
 		params.key = @api_key
-		params.lang = "#{@source_lang}-#{@target_lang}"
+		params.lang = "#{languages.source}-#{languages.target}"
 		params.options = 1
 		return "#{@base_url}#{path}?#{qs.stringify(params)}"
 	get: (url, callback) ->
@@ -21,17 +21,10 @@ class YandexApi
 			callback(data)
 			return
 		return
-	translate: (text, callback) ->
-		@get(@buildUrl('/translate', {text: text}), (data) ->
+	translate: (text, languages, callback) ->
+		@get(@buildUrl('/translate', {text: text}, languages), (data) ->
 			callback(data)
 			return
 		)
-		return
-	switch: ->
-		new_source_lang = @target_lang
-		new_target_lang = @source_lang
-		@source_lang = new_source_lang
-		@target_lang = new_target_lang
 		return	
-	
 module.exports = YandexApi
