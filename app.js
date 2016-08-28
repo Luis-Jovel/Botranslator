@@ -23,7 +23,10 @@
   server.post('/api/messages', connector.listen());
 
   server.get(/\//, function(req, res, next) {
-    return res.send(200);
+    res.status(200);
+    return res.json({
+      data: "privacy policy"
+    });
   });
 
 }).call(this);

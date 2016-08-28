@@ -20,4 +20,6 @@ bot = new Botranslator connector
 server.post '/api/messages', connector.listen()
 
 server.get /\//, (req, res, next) ->
-	res.send 200
+	res.status 200
+	res.json
+		data: "privacy policy"
