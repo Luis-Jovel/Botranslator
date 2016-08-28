@@ -63,6 +63,7 @@ class Bot
 				@intents.matches @lang.intent_instructions, [
 					(session, args, next) =>
 						session.send @lang.send_bot_language_setted, @lang[results.response.entity]
+						session.send @lang.send_greetings
 						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
 						session.send @lang.send_instructions_2
 						session.send @lang.send_instructions_3

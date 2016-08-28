@@ -61,6 +61,7 @@
             _this.intents.matches(_this.lang.intent_instructions, [
               function(session, args, next) {
                 session.send(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
+                session.send(_this.lang.send_greetings);
                 session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
                 session.send(_this.lang.send_instructions_2);
                 session.send(_this.lang.send_instructions_3);
