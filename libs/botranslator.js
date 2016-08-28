@@ -35,7 +35,7 @@
             if (!session.userData.first_message) {
               session.userData.first_message = true;
               session.send(_this.lang.send_greetings);
-              session.send(_this.lang.send_instructions, _this.lang[session.userData.translation_order.source], _this.lang[session.userDate.translation_order.target], _this.lang[session.userDate.translation_order.target], _this.lang[session.userData.translation_order.source]);
+              session.send(_this.lang.send_instructions, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.source]);
               session.send(_this.lang.send_instructions_2);
               session.send(_this.lang.send_instructions_3);
             }
@@ -64,14 +64,14 @@
                   source: prev_order.target,
                   target: prev_order.source
                 };
-                session.send(_this.lang.send_switch_languages, _this.lang[session.userData.translation_order.source], _this.lang[session.userDate.translation_order.target]);
+                session.send(_this.lang.send_switch_languages, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target]);
               }
             ]);
             _this.intents.matches(_this.lang.intent_instructions, [
               function(session, args, next) {
                 session.send(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
                 session.send(_this.lang.send_greetings);
-                session.send(_this.lang.send_instructions, _this.lang[session.userData.translation_order.source], _this.lang[session.userDate.translation_order.target], _this.lang[session.userDate.translation_order.target], _this.lang[session.userData.translation_order.source]);
+                session.send(_this.lang.send_instructions, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.source]);
                 session.send(_this.lang.send_instructions_2);
                 session.send(_this.lang.send_instructions_3);
               }
@@ -91,7 +91,7 @@
           return function(session, args, next) {
             var lang;
             lang = _this.lang;
-            session.send(_this.lang.send_from_source_to_target_language, _this.lang[session.userData.translation_order.source], _this.lang[session.userDate.translation_order.target]);
+            session.send(_this.lang.send_from_source_to_target_language, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target]);
             translator.translate(session.message.text, session.userData.translation_order, function(message) {
               if (message.success) {
                 session.send('%s', message.text);
