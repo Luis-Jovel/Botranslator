@@ -39,12 +39,16 @@
       this.bot.dialog('/set-bot-ui-lang', [
         (function(_this) {
           return function(session) {
-            builder.Prompts.text(session, _this.lang.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language);
+            var msg;
+            msg = new builder.Message(session).attachments([new builder.HeroCard(session).title("¡Bienvenido! / Welcome!").subtitle(languages.es.send_set_bot_ui_language + "\n\n" + languages.en.send_set_bot_ui_language).buttons([builder.CardAction.imBack(session, "es", languages.es.es), builder.CardAction.imBack(session, "en", languages.en.en)])]);
+            builder.Prompts.choice(session, msg, "es|en");
           };
         })(this), (function(_this) {
           return function(session, results) {
-            delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
-            delete _this.intents.handlers["" + _this.lang.intent_instructions];
+            if (_this.lang != null) {
+              delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
+              delete _this.intents.handlers["" + _this.lang.intent_instructions];
+            }
             _this.lang = languages[results.response];
             _this.intents.matches(_this.lang.intent_switch_languages, [
               function(session, args, next) {
@@ -57,8 +61,7 @@
                 session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
               }
             ]);
-            session.send(_this.lang.send_bot_language_setted, _this.lang[results.response]);
-            session.endDialog();
+            session.endDialog(_this.lang.send_bot_language_setted, _this.lang[results.response]);
           };
         })(this)
       ]);

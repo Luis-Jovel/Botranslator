@@ -31,12 +31,25 @@ class Bot
 		@bot.dialog '/set-bot-ui-lang', [
 			(session) =>
 				# builder.Prompts.text session, "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
-				builder.Prompts.text session, "#{@lang.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
+				# session.send "%s.\n\n%s", languages.es.send_set_bot_ui_language, languages.en.send_set_bot_ui_language
+				#ask user to select language from optio menu
+				msg = new builder.Message(session)
+					.attachments [
+						new builder.HeroCard session
+							.title "¡Bienvenido! / Welcome!"
+							.subtitle "#{languages.es.send_set_bot_ui_language}\n\n#{languages.en.send_set_bot_ui_language}"
+							.buttons [
+								builder.CardAction.imBack session, "es", languages.es.es
+								builder.CardAction.imBack session, "en", languages.en.en
+							]
+					]
+				builder.Prompts.choice session, msg, "es|en"
 				return
 			(session, results) =>
 				# Ignore intents from previous selected language
-				delete @intents.handlers["#{@lang.intent_switch_languages}"]
-				delete @intents.handlers["#{@lang.intent_instructions}"]
+				if @lang?
+					delete @intents.handlers["#{@lang.intent_switch_languages}"]
+					delete @intents.handlers["#{@lang.intent_instructions}"]
 				@lang = languages[results.response]
 				# Match intents for selected bot ui language
 				@intents.matches @lang.intent_switch_languages, [
@@ -50,8 +63,7 @@ class Bot
 						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
 						return
 				]
-				session.send @lang.send_bot_language_setted, @lang[results.response]
-				session.endDialog()
+				session.endDialog @lang.send_bot_language_setted, @lang[results.response]
 				return
 		]
 		@bot.dialog '/intents', @intents
