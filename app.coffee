@@ -20,5 +20,4 @@ bot = new Botranslator connector
 server.post '/api/messages', connector.listen()
 
 server.get /\//, (req, res, next) ->
-	# res.send 200
-	res.sendFile './public/index.html'
+	res.send 200
