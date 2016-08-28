@@ -45,11 +45,13 @@
           };
         })(this), (function(_this) {
           return function(session, results) {
+            console.log("resutls response: " + results.response);
             console.log("before deleting intents: " + _this.lang);
             if (_this.lang != null) {
               delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
               delete _this.intents.handlers["" + _this.lang.intent_instructions];
             }
+            console.log("languages[results.response]: " + languages[results.response]);
             _this.lang = languages[results.response];
             console.log("after deleting intents and changing lang: " + _this.lang);
             _this.intents.matches(_this.lang.intent_switch_languages, [

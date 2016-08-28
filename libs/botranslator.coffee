@@ -47,10 +47,12 @@ class Bot
 				return
 			(session, results) =>
 				# Ignore intents from previous selected language
+				console.log "resutls response: #{results.response}"
 				console.log "before deleting intents: #{@lang}"
 				if @lang?
 					delete @intents.handlers["#{@lang.intent_switch_languages}"]
 					delete @intents.handlers["#{@lang.intent_instructions}"]
+				console.log "languages[results.response]: #{languages[results.response]}"
 				@lang = languages[results.response]
 				console.log "after deleting intents and changing lang: #{@lang}"
 				# Match intents for selected bot ui language
