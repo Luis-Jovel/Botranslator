@@ -39,7 +39,7 @@
       this.bot.dialog('/set-bot-ui-lang', [
         (function(_this) {
           return function(session) {
-            builder.Prompts.text(session, languages.es.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language);
+            builder.Prompts.text(session, _this.lang.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language);
           };
         })(this), (function(_this) {
           return function(session, results) {

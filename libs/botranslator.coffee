@@ -30,7 +30,8 @@ class Bot
 		]
 		@bot.dialog '/set-bot-ui-lang', [
 			(session) =>
-				builder.Prompts.text session, "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
+				# builder.Prompts.text session, "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
+				builder.Prompts.text session, "#{@lang.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
 				return
 			(session, results) =>
 				# Ignore intents from previous selected language
