@@ -41,18 +41,14 @@
           return function(session) {
             var msg;
             session.send("%s.\n\n%s", languages.es.send_set_bot_ui_language, languages.en.send_set_bot_ui_language);
-            msg = new builder.Message(session).attachments([new builder.HeroCard(session).buttons([builder.CardAction.imBack(session, "es", languages.es.es), builder.CardAction.imBack(session, "en", languages.en.en)])]);
+            msg = new builder.Message(session).attachments([new builder.HeroCard(session).subtitle(languages.es.send_set_bot_ui_language + "\n" + languages.en.send_set_bot_ui_language).buttons([builder.CardAction.imBack(session, "es", languages.es.es), builder.CardAction.imBack(session, "en", languages.en.en)])]);
             builder.Prompts.choice(session, msg, "es|en");
           };
         })(this), (function(_this) {
           return function(session, results) {
-            console.log("resutls response: " + results.response.entity);
-            console.log("before deleting intents: " + _this.lang);
             delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
             delete _this.intents.handlers["" + _this.lang.intent_instructions];
-            console.log("languages[results.response.entity]: " + languages[results.response.entity]);
             _this.lang = languages[results.response.entity];
-            console.log("after deleting intents and changing lang: " + _this.lang);
             _this.intents.matches(_this.lang.intent_switch_languages, [
               function(session, args, next) {
                 translator["switch"]();

@@ -37,7 +37,7 @@ class Bot
 					.attachments [
 						new builder.HeroCard session
 							# .title ""
-							# .subtitle ""
+							.subtitle "#{languages.es.send_set_bot_ui_language}\n#{languages.en.send_set_bot_ui_language}"
 							.buttons [
 								builder.CardAction.imBack session, "es", languages.es.es
 								builder.CardAction.imBack session, "en", languages.en.en
@@ -47,13 +47,9 @@ class Bot
 				return
 			(session, results) =>
 				# Ignore intents from previous selected language
-				console.log "resutls response: #{results.response.entity}"
-				console.log "before deleting intents: #{@lang}"
 				delete @intents.handlers["#{@lang.intent_switch_languages}"]
 				delete @intents.handlers["#{@lang.intent_instructions}"]
-				console.log "languages[results.response.entity]: #{languages[results.response.entity]}"
 				@lang = languages[results.response.entity]
-				console.log "after deleting intents and changing lang: #{@lang}"
 				# Match intents for selected bot ui language
 				@intents.matches @lang.intent_switch_languages, [
 					(session, args, next) =>
