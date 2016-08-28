@@ -22,11 +22,9 @@
 
   server.post('/api/messages', connector.listen());
 
-  server.get(/\//, function(req, res, next) {
-    res.status(200);
-    return res.json({
-      data: "privacy policy"
-    });
-  });
+  server.get(/\//, restify.serveStatic({
+    directory: './public',
+    "default": 'index.html'
+  }));
 
 }).call(this);
