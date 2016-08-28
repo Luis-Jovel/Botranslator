@@ -31,6 +31,8 @@
             if (!session.userData.first_message) {
               session.userData.first_message = true;
               session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
+              session.send(_this.lang.send_instructions_2);
+              session.send(_this.lang.send_instructions_3);
             }
             session.beginDialog('/intents');
           };
@@ -57,10 +59,17 @@
             ]);
             _this.intents.matches(_this.lang.intent_instructions, [
               function(session, args, next) {
+                session.send(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
                 session.send(_this.lang.send_instructions, _this.lang[translator.source_lang], _this.lang[translator.target_lang], _this.lang[translator.target_lang], _this.lang[translator.source_lang]);
+                session.send(_this.lang.send_instructions_2);
+                session.send(_this.lang.send_instructions_3);
               }
             ]);
-            session.endDialog(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
+            if (!session.userData.first_message) {
+              session.endDialog(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
+            } else {
+              session.beginDialog('/intents');
+            }
           };
         })(this)
       ]);
@@ -75,6 +84,7 @@
           return function(session, args, next) {
             var lang;
             lang = _this.lang;
+            session.send(_this.lang.send_from_source_to_target_language, _this.lang[translator.source_lang], _this.lang[translator.target_lang]);
             translator.translate(session.message.text, function(message) {
               if (message.success) {
                 session.send('%s', message.text);

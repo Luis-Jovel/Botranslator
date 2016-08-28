@@ -25,6 +25,8 @@ class Bot
 					if !session.userData.first_message
 						session.userData.first_message = true
 						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
+						session.send @lang.send_instructions_2
+						session.send @lang.send_instructions_3
 					session.beginDialog '/intents'
 					return
 		]
@@ -44,9 +46,11 @@ class Bot
 				builder.Prompts.choice session, msg, "es|en"
 				return
 			(session, results) =>
-				# Ignore intents from previous selected language
+				# Ignore intents from previous selected language, this way we avoid interference 
+				# between reserved words from previous and current selected languages
 				delete @intents.handlers["#{@lang.intent_switch_languages}"]
 				delete @intents.handlers["#{@lang.intent_instructions}"]
+				# user's selected language becomes the current langauge
 				@lang = languages[results.response.entity]
 				# Match intents for selected bot ui language
 				@intents.matches @lang.intent_switch_languages, [
@@ -57,10 +61,16 @@ class Bot
 				]
 				@intents.matches @lang.intent_instructions, [
 					(session, args, next) =>
+						session.send @lang.send_bot_language_setted, @lang[results.response.entity]
 						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
+						session.send @lang.send_instructions_2
+						session.send @lang.send_instructions_3
 						return
 				]
-				session.endDialog @lang.send_bot_language_setted, @lang[results.response.entity]
+				if !session.userData.first_message
+					session.endDialog @lang.send_bot_language_setted, @lang[results.response.entity]
+				else
+					session.beginDialog '/intents'
 				return
 		]
 		@bot.dialog '/intents', @intents
@@ -74,6 +84,7 @@ class Bot
 		@intents.onDefault [
 			(session, args, next) =>
 				lang = @lang
+				session.send @lang.send_from_source_to_target_language, @lang[translator.source_lang], @lang[translator.target_lang]
 				translator.translate session.message.text, (message) ->
 						if message.success
 							session.send '%s', message.text
