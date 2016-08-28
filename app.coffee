@@ -18,3 +18,7 @@ connector = new builder.ChatConnector(
 bot = new Botranslator connector
 
 server.post '/api/messages', connector.listen()
+
+server.get /\//, restify.serveStatic
+	directory: './public'
+	default: 'index.html'

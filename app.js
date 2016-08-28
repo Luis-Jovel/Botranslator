@@ -22,4 +22,9 @@
 
   server.post('/api/messages', connector.listen());
 
+  server.get(/\//, restify.serveStatic({
+    directory: './public',
+    "default": 'index.html'
+  }));
+
 }).call(this);
