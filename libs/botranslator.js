@@ -76,11 +76,6 @@
         })(this)
       ]);
       this.bot.dialog('/intents', this.intents);
-      this.intents.matches(languages.intent_change_bot_ui_language, [
-        function(session) {
-          session.beginDialog('/set-bot-ui-lang');
-        }
-      ]);
       this.intents.onDefault([
         (function(_this) {
           return function(session, args, next) {
@@ -97,6 +92,18 @@
             return;
           };
         })(this)
+      ]);
+      this.intents.matches(languages.intent_change_bot_ui_language, [
+        function(session) {
+          session.beginDialog('/set-bot-ui-lang');
+        }
+      ]);
+      this.intents.matches(/\/deleteProfile/, [
+        function(session) {
+          session.userData = {};
+          session.send("userData deleted");
+          return session.endDialog();
+        }
       ]);
     }
 

@@ -78,11 +78,6 @@ class Bot
 		@bot.dialog '/intents', @intents
 
 		# Bot intents
-		@intents.matches languages.intent_change_bot_ui_language, [
-			(session) ->
-				session.beginDialog '/set-bot-ui-lang'
-				return
-		]
 		@intents.onDefault [
 			(session, args, next) =>
 				lang = @lang
@@ -97,4 +92,18 @@ class Bot
 					return
 				return
 		]	
+		@intents.matches languages.intent_change_bot_ui_language, [
+			(session) ->
+				session.beginDialog '/set-bot-ui-lang'
+				return
+		]
+		# intents for devs
+		@intents.matches /\/deleteProfile/, [
+			# dialog to delete all user data related to a single user
+			# this option is not explicitly explained to the user because its use is mostly for development purposes
+			(session) ->
+				session.userData = {}
+				session.send "userData deleted"
+				session.endDialog()
+		]
 module.exports = Bot
