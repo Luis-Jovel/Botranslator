@@ -67,8 +67,9 @@ class Bot
 						session.send @lang.send_instructions_3
 						return
 				]
+				session.send @lang.send_bot_language_setted, @lang[results.response.entity]
 				if !session.userData.first_message
-					session.endDialog @lang.send_bot_language_setted, @lang[results.response.entity]
+					session.endDialog()
 				else
 					session.beginDialog '/intents'
 				return

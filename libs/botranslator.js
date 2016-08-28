@@ -65,8 +65,9 @@
                 session.send(_this.lang.send_instructions_3);
               }
             ]);
+            session.send(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
             if (!session.userData.first_message) {
-              session.endDialog(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
+              session.endDialog();
             } else {
               session.beginDialog('/intents');
             }
