@@ -29,7 +29,7 @@ class Bot
 					if !session.userData.first_message
 						session.userData.first_message = true
 						session.send @lang.send_greetings
-						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
+						session.send @lang.send_instructions, @lang[session.userData.translation_order.source], @lang[session.userDate.translation_order.target], @lang[session.userDate.translation_order.target], @lang[session.userData.translation_order.source]
 						session.send @lang.send_instructions_2
 						session.send @lang.send_instructions_3
 					session.beginDialog '/intents'
@@ -65,7 +65,7 @@ class Bot
 						session.userData.translation_order =
 							source: prev_order.target
 							target: prev_order.source
-						session.send @lang.send_switch_languages, @lang[translator.source_lang], @lang[translator.target_lang]
+						session.send @lang.send_switch_languages, @lang[session.userData.translation_order.source], @lang[session.userDate.translation_order.target]
 						return
 				]
 				@intents.matches @lang.intent_instructions, [
@@ -73,7 +73,7 @@ class Bot
 						# intent for showing instructions
 						session.send @lang.send_bot_language_setted, @lang[results.response.entity]
 						session.send @lang.send_greetings
-						session.send @lang.send_instructions, @lang[translator.source_lang], @lang[translator.target_lang], @lang[translator.target_lang], @lang[translator.source_lang]
+						session.send @lang.send_instructions, @lang[session.userData.translation_order.source], @lang[session.userDate.translation_order.target], @lang[session.userDate.translation_order.target], @lang[session.userData.translation_order.source]
 						session.send @lang.send_instructions_2
 						session.send @lang.send_instructions_3
 						return
@@ -91,7 +91,7 @@ class Bot
 		@intents.onDefault [
 			(session, args, next) =>
 				lang = @lang
-				session.send @lang.send_from_source_to_target_language, @lang[translator.source_lang], @lang[translator.target_lang]
+				session.send @lang.send_from_source_to_target_language, @lang[session.userData.translation_order.source], @lang[session.userDate.translation_order.target]
 				translator.translate session.message.text, session.userData.translation_order, (message) ->
 						if message.success
 							session.send '%s', message.text
