@@ -3,4 +3,4 @@ This is a chatbot for Facebook Messenger that translates messages from users, fe
 
 You can talk with the bot here: [BoTranslator](https://www.facebook.com/BoTranslator-157609834678681)
 
-Hosted in Heroku, developed using the **Microsoft Bot Framework** and **Node.js**. It's coded using **Coffee Script** with gulp for task automation. This Chatbot takes advantage of the new Bot Builder V3.1 using Rich cards attachments, dialogs, intent dialogs, Prompts and data validation.
+Hosted in **Heroku**, developed using the **Microsoft Bot Framework** and **Node.js**. It's coded using **Coffee Script** with gulp for task automation. This Chatbot takes advantage of the new Bot Builder V3.1 using Rich cards attachments, dialogs, intent dialogs, Prompts and data validation.
