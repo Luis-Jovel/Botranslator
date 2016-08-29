@@ -6,8 +6,8 @@
     es: {
       es: "Español",
       en: "Inglés",
-      intent_switch_languages: /(inter)?(cambiar|cambi[oa]{1})/i,
-      intent_instructions: /(instrucciones|ayuda|manual)/i,
+      intent_switch_languages: /^(inter)?(cambiar|cambi[oa]{1})$/i,
+      intent_instructions: /^(instrucciones|ayuda|manual)$/i,
       send_greetings: "¡Hola! mi nombre es BoTranslator, Escribe lo que quieras (LO QUE QUIERAS ;) ;) ) en tus mensajes y trataré de traducirlos (sí, dije \"trataré\").",
       send_instructions: "Actualmente estoy traduciendo de %s a %s, escribe \"cambiar\" o \"intercambiar\" para traducir de %s a %s",
       send_instructions_2: "Si quieres ver las instrucciones en cualquier momento escribe \"instrucciones\" o \"ayuda\"",
@@ -21,8 +21,8 @@
     en: {
       es: "Spanish",
       en: "English",
-      intent_switch_languages: /(switch|change|exchange|flip)/i,
-      intent_instructions: /(instructions|help|manual)/i,
+      intent_switch_languages: /^(switch|change|exchange|flip)$/i,
+      intent_instructions: /^(instructions|help|manual)$/i,
       send_greetings: "Hi! I'm a Bot Translator, BoTranslator!, Write whatever you want in your messages and I'll try to translate them (yes, I said I'll \"try\").",
       send_instructions: "Currently I'm translating from %s to %s, write \"switch\" or \"change\" to translate from %s to %s",
       send_instructions_2: "You can write \"instructions\" or \"help\" at any time to see the instructions again",
