@@ -8,7 +8,6 @@ translator = new yandexApi yandex_api_key
 languages = new require '../lang/lang'
 class Bot
 	constructor: (@connector) ->
-		@lang = languages.es
 		@bot = new builder.UniversalBot @connector
 		@intents = new builder.IntentDialog()
 		
@@ -16,6 +15,8 @@ class Bot
 		@bot.dialog '/', [
 			(session, args, next) =>
 				if !session.userData.first_message
+					# set bot ui language to spanish by default
+					session.userData.bot_ui_lang = "es"
 					# initialize translation from english to spanish by default
 					session.userData.translation_order =
 						source: "en"
@@ -28,10 +29,10 @@ class Bot
 			(session, args,next) =>
 					if !session.userData.first_message
 						session.userData.first_message = true
-						session.send @lang.send_greetings
-						session.send @lang.send_instructions, @lang[session.userData.translation_order.source], @lang[session.userData.translation_order.target], @lang[session.userData.translation_order.target], @lang[session.userData.translation_order.source]
-						session.send @lang.send_instructions_2
-						session.send @lang.send_instructions_3
+						session.send languages[session.userData.bot_ui_lang].send_greetings
+						session.send languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]
+						session.send languages[session.userData.bot_ui_lang].send_instructions_2
+						session.send languages[session.userData.bot_ui_lang].send_instructions_3
 					session.beginDialog '/intents'
 					return
 		]
@@ -53,32 +54,32 @@ class Bot
 			(session, results) =>
 				# Ignore intents from previous selected language, this way we avoid interference 
 				# between reserved words from previous and current selected languages
-				delete @intents.handlers["#{@lang.intent_switch_languages}"]
-				delete @intents.handlers["#{@lang.intent_instructions}"]
+				delete @intents.handlers["#{languages[session.userData.bot_ui_lang].intent_switch_languages}"]
+				delete @intents.handlers["#{languages[session.userData.bot_ui_lang].intent_instructions}"]
 				# user's selected language becomes the current langauge
-				@lang = languages[results.response.entity]
+				session.userData.bot_ui_lang = results.response.entity
 				# Match intents for selected bot ui language
-				@intents.matches @lang.intent_switch_languages, [
+				@intents.matches languages[session.userData.bot_ui_lang].intent_switch_languages, [
 					(session, args, next) =>
 						# intent for changing the order of the translation
 						prev_order = session.userData.translation_order
 						session.userData.translation_order =
 							source: prev_order.target
 							target: prev_order.source
-						session.send @lang.send_switch_languages, @lang[session.userData.translation_order.source], @lang[session.userData.translation_order.target]
+						session.send languages[session.userData.bot_ui_lang].send_switch_languages, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target]
 						return
 				]
-				@intents.matches @lang.intent_instructions, [
+				@intents.matches languages[session.userData.bot_ui_lang].intent_instructions, [
 					(session, args, next) =>
 						# intent for showing instructions
-						session.send @lang.send_bot_language_setted, @lang[results.response.entity]
-						session.send @lang.send_greetings
-						session.send @lang.send_instructions, @lang[session.userData.translation_order.source], @lang[session.userData.translation_order.target], @lang[session.userData.translation_order.target], @lang[session.userData.translation_order.source]
-						session.send @lang.send_instructions_2
-						session.send @lang.send_instructions_3
+						session.send languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]
+						session.send languages[session.userData.bot_ui_lang].send_greetings
+						session.send languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]
+						session.send languages[session.userData.bot_ui_lang].send_instructions_2
+						session.send languages[session.userData.bot_ui_lang].send_instructions_3
 						return
 				]
-				session.send @lang.send_bot_language_setted, @lang[results.response.entity]
+				session.send languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]
 				if !session.userData.first_message
 					session.endDialog()
 				else
@@ -90,8 +91,8 @@ class Bot
 		# Bot intents
 		@intents.onDefault [
 			(session, args, next) =>
-				lang = @lang
-				session.send @lang.send_from_source_to_target_language, @lang[session.userData.translation_order.source], @lang[session.userData.translation_order.target]
+				lang = languages[session.userData.bot_ui_lang]
+				session.send languages[session.userData.bot_ui_lang].send_from_source_to_target_language, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target]
 				translator.translate session.message.text, session.userData.translation_order, (message) ->
 						if message.success
 							session.send '%s', message.text

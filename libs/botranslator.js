@@ -14,13 +14,13 @@
   Bot = (function() {
     function Bot(connector) {
       this.connector = connector;
-      this.lang = languages.es;
       this.bot = new builder.UniversalBot(this.connector);
       this.intents = new builder.IntentDialog();
       this.bot.dialog('/', [
         (function(_this) {
           return function(session, args, next) {
             if (!session.userData.first_message) {
+              session.userData.bot_ui_lang = "es";
               session.userData.translation_order = {
                 source: "en",
                 target: "es"
@@ -34,10 +34,10 @@
           return function(session, args, next) {
             if (!session.userData.first_message) {
               session.userData.first_message = true;
-              session.send(_this.lang.send_greetings);
-              session.send(_this.lang.send_instructions, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.source]);
-              session.send(_this.lang.send_instructions_2);
-              session.send(_this.lang.send_instructions_3);
+              session.send(languages[session.userData.bot_ui_lang].send_greetings);
+              session.send(languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]);
+              session.send(languages[session.userData.bot_ui_lang].send_instructions_2);
+              session.send(languages[session.userData.bot_ui_lang].send_instructions_3);
             }
             session.beginDialog('/intents');
           };
@@ -53,10 +53,10 @@
           };
         })(this), (function(_this) {
           return function(session, results) {
-            delete _this.intents.handlers["" + _this.lang.intent_switch_languages];
-            delete _this.intents.handlers["" + _this.lang.intent_instructions];
-            _this.lang = languages[results.response.entity];
-            _this.intents.matches(_this.lang.intent_switch_languages, [
+            delete _this.intents.handlers["" + languages[session.userData.bot_ui_lang].intent_switch_languages];
+            delete _this.intents.handlers["" + languages[session.userData.bot_ui_lang].intent_instructions];
+            session.userData.bot_ui_lang = results.response.entity;
+            _this.intents.matches(languages[session.userData.bot_ui_lang].intent_switch_languages, [
               function(session, args, next) {
                 var prev_order;
                 prev_order = session.userData.translation_order;
@@ -64,19 +64,19 @@
                   source: prev_order.target,
                   target: prev_order.source
                 };
-                session.send(_this.lang.send_switch_languages, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target]);
+                session.send(languages[session.userData.bot_ui_lang].send_switch_languages, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target]);
               }
             ]);
-            _this.intents.matches(_this.lang.intent_instructions, [
+            _this.intents.matches(languages[session.userData.bot_ui_lang].intent_instructions, [
               function(session, args, next) {
-                session.send(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
-                session.send(_this.lang.send_greetings);
-                session.send(_this.lang.send_instructions, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.target], _this.lang[session.userData.translation_order.source]);
-                session.send(_this.lang.send_instructions_2);
-                session.send(_this.lang.send_instructions_3);
+                session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
+                session.send(languages[session.userData.bot_ui_lang].send_greetings);
+                session.send(languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]);
+                session.send(languages[session.userData.bot_ui_lang].send_instructions_2);
+                session.send(languages[session.userData.bot_ui_lang].send_instructions_3);
               }
             ]);
-            session.send(_this.lang.send_bot_language_setted, _this.lang[results.response.entity]);
+            session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
             if (!session.userData.first_message) {
               session.endDialog();
             } else {
@@ -90,8 +90,8 @@
         (function(_this) {
           return function(session, args, next) {
             var lang;
-            lang = _this.lang;
-            session.send(_this.lang.send_from_source_to_target_language, _this.lang[session.userData.translation_order.source], _this.lang[session.userData.translation_order.target]);
+            lang = languages[session.userData.bot_ui_lang];
+            session.send(languages[session.userData.bot_ui_lang].send_from_source_to_target_language, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target]);
             translator.translate(session.message.text, session.userData.translation_order, function(message) {
               if (message.success) {
                 session.send('%s', message.text);
