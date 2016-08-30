@@ -63,7 +63,7 @@ class Bot
 		]
 		@bot.dialog '/intents', @intents
 
-		# Bot intents
+		# Bot intents.
 		
 		# Match intents for selected bot ui language
 		["es","en"].forEach (lang) =>
