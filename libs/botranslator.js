@@ -50,26 +50,7 @@
           };
         })(this), (function(_this) {
           return function(session, results) {
-            delete _this.intents.handlers["" + languages[session.userData.bot_ui_lang].intent_switch_languages];
-            delete _this.intents.handlers["" + languages[session.userData.bot_ui_lang].intent_instructions];
             session.userData.bot_ui_lang = results.response.entity;
-            _this.intents.matches(languages[session.userData.bot_ui_lang].intent_switch_languages, [
-              function(session, args, next) {
-                var prev_order;
-                prev_order = session.userData.translation_order;
-                session.userData.translation_order = {
-                  source: prev_order.target,
-                  target: prev_order.source
-                };
-                session.send(languages[session.userData.bot_ui_lang].send_switch_languages, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target]);
-              }
-            ]);
-            _this.intents.matches(languages[session.userData.bot_ui_lang].intent_instructions, [
-              function(session, args, next) {
-                session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
-                _this.greetings(session);
-              }
-            ]);
             session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
             if (!session.userData.first_message) {
               session.endDialog();
@@ -80,6 +61,27 @@
         })(this)
       ]);
       this.bot.dialog('/intents', this.intents);
+      ["es", "en"].forEach((function(_this) {
+        return function(lang) {
+          _this.intents.matches(languages[lang].intent_switch_languages, [
+            function(session, args, next) {
+              var prev_order;
+              prev_order = session.userData.translation_order;
+              session.userData.translation_order = {
+                source: prev_order.target,
+                target: prev_order.source
+              };
+              session.send(languages[session.userData.bot_ui_lang].send_switch_languages, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target]);
+            }
+          ]);
+          return _this.intents.matches(languages[lang].intent_instructions, [
+            function(session, args, next) {
+              session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
+              _this.greetings(session);
+            }
+          ]);
+        };
+      })(this));
       this.intents.onDefault([
         (function(_this) {
           return function(session, args, next) {

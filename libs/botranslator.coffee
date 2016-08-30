@@ -49,37 +49,8 @@ class Bot
 				builder.Prompts.choice session, msg, "es|en"
 				return
 			(session, results) =>
-				# Ignore intents from previous selected language, this way we avoid interference 
-				# between reserved words from previous and current selected languages
-				delete @intents.handlers["#{languages[session.userData.bot_ui_lang].intent_switch_languages}"]
-				delete @intents.handlers["#{languages[session.userData.bot_ui_lang].intent_instructions}"]
 				# user's selected language becomes the current langauge
 				session.userData.bot_ui_lang = results.response.entity
-				# Match intents for selected bot ui language
-				@intents.matches languages[session.userData.bot_ui_lang].intent_switch_languages, [
-					(session, args, next) =>
-						# intent for changing the order of the translation
-						prev_order = session.userData.translation_order
-						session.userData.translation_order =
-							source: prev_order.target
-							target: prev_order.source
-						session.send(
-							languages[session.userData.bot_ui_lang].send_switch_languages,
-							languages[session.userData.bot_ui_lang][session.userData.translation_order.source], 
-							languages[session.userData.bot_ui_lang][session.userData.translation_order.target]
-						)
-						return
-				]
-				@intents.matches languages[session.userData.bot_ui_lang].intent_instructions, [
-					(session, args, next) =>
-						# intent for showing instructions
-						session.send(
-							languages[session.userData.bot_ui_lang].send_bot_language_setted, 
-							languages[session.userData.bot_ui_lang][results.response.entity]
-						)
-						@greetings(session)
-						return
-				]
 				session.send(
 					languages[session.userData.bot_ui_lang].send_bot_language_setted, 
 					languages[session.userData.bot_ui_lang][results.response.entity]
@@ -93,6 +64,33 @@ class Bot
 		@bot.dialog '/intents', @intents
 
 		# Bot intents
+		
+		# Match intents for selected bot ui language
+		["es","en"].forEach (lang) =>
+			@intents.matches languages[lang].intent_switch_languages, [
+				(session, args, next) =>
+					# intent for changing the order of the translation
+					prev_order = session.userData.translation_order
+					session.userData.translation_order =
+						source: prev_order.target
+						target: prev_order.source
+					session.send(
+						languages[session.userData.bot_ui_lang].send_switch_languages,
+						languages[session.userData.bot_ui_lang][session.userData.translation_order.source], 
+						languages[session.userData.bot_ui_lang][session.userData.translation_order.target]
+					)
+					return
+			]
+			@intents.matches languages[lang].intent_instructions, [
+				(session, args, next) =>
+					# intent for showing instructions
+					session.send(
+						languages[session.userData.bot_ui_lang].send_bot_language_setted, 
+						languages[session.userData.bot_ui_lang][results.response.entity]
+					)
+					@greetings(session)
+					return
+			]
 		@intents.onDefault [
 			(session, args, next) =>
 				lang = languages[session.userData.bot_ui_lang]
