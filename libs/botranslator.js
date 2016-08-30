@@ -34,10 +34,7 @@
           return function(session, args, next) {
             if (!session.userData.first_message) {
               session.userData.first_message = true;
-              session.send(languages[session.userData.bot_ui_lang].send_greetings);
-              session.send(languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]);
-              session.send(languages[session.userData.bot_ui_lang].send_instructions_2);
-              session.send(languages[session.userData.bot_ui_lang].send_instructions_3);
+              _this.greetings(session);
             }
             session.beginDialog('/intents');
           };
@@ -70,10 +67,7 @@
             _this.intents.matches(languages[session.userData.bot_ui_lang].intent_instructions, [
               function(session, args, next) {
                 session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
-                session.send(languages[session.userData.bot_ui_lang].send_greetings);
-                session.send(languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]);
-                session.send(languages[session.userData.bot_ui_lang].send_instructions_2);
-                session.send(languages[session.userData.bot_ui_lang].send_instructions_3);
+                _this.greetings(session);
               }
             ]);
             session.send(languages[session.userData.bot_ui_lang].send_bot_language_setted, languages[session.userData.bot_ui_lang][results.response.entity]);
@@ -116,6 +110,13 @@
         }
       ]);
     }
+
+    Bot.prototype.greetings = function(session) {
+      session.send(languages[session.userData.bot_ui_lang].send_greetings);
+      session.send(languages[session.userData.bot_ui_lang].send_instructions, languages[session.userData.bot_ui_lang][session.userData.translation_order.source], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.target], languages[session.userData.bot_ui_lang][session.userData.translation_order.source]);
+      session.send(languages[session.userData.bot_ui_lang].send_instructions_2);
+      return session.send(languages[session.userData.bot_ui_lang].send_instructions_3);
+    };
 
     return Bot;
 
